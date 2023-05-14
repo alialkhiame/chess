@@ -9,9 +9,33 @@ public class Spot {
 	private boolean color;
 	private ImageIcon icon = new ImageIcon();
 	private JLabel label = new JLabel();
+	boolean taken = false;
+	private boolean squareColor = isSquareColor();
+
+	public boolean isSquareColor() {
+		return squareColor;
+	}
+
+	private void setSquareColor(boolean squareColor) {
+		this.squareColor = squareColor;
+	}
+
+	public Spot() {
+		this.piece = null;
+		this.pieceName = null;
+		taken = false;
+		if (this.squareColor) {
+			this.icon = new ImageIcon("w.png");
+		} else {
+			this.icon = new ImageIcon("b.png");
+		}
+		this.label = new JLabel();
+		this.label.setIcon(this.icon);
+
+	}
 
 	public String getPieceName() {
-		return pieceName;
+		return this.pieceName;
 	}
 
 	public void setPieceName(String piceName) {
@@ -20,15 +44,15 @@ public class Spot {
 	}
 
 	public boolean isColor() {
-		return color;
+		return this.color;
 	}
 
 	public void setColor(boolean color) {
-		color = color;
+		this.color = color;
 	}
 
 	public ImageIcon getIcon() {
-		return icon;
+		return this.icon;
 	}
 
 	public void setIcon(ImageIcon icon) {
@@ -36,20 +60,37 @@ public class Spot {
 	}
 
 	public JLabel getLabel() {
-		return label;
+		if (this.label == null) {
+			setlabel();
+		}
+
+		return this.label;
 	}
 
 	public void setLabel(JLabel label) {
+
 		this.label = label;
+		setlabel();
 	}
 
 	public Spot(int x, int y, Piece piece) {
+		if ((x + y) % 2 == 0) {
+			setSquareColor(true);
+		} else {
+			setSquareColor(false);
+		}
 		this.setPiece(piece);
 		this.setX(x);
 		this.setY(y);
 	}
 
 	public Spot(Piece piece, int x, int y, boolean color, String pieceName) {
+		if ((x + y) % 2 == 0) {
+			setSquareColor(true);
+		} else {
+			setSquareColor(false);
+		}
+		this.taken = true;
 		this.piece = piece;
 		this.x = x;
 		this.y = y;
@@ -59,14 +100,27 @@ public class Spot {
 	}
 
 	public void setlabel() {
-		if (pieceName.equals("w") || pieceName.equals("b")) {
-			this.icon = new ImageIcon(pieceName + ".png");
+		this.taken = false;
+		if (this.pieceName == null) {
+			if (this.squareColor) {
+				this.icon = new ImageIcon("w.png");
+				this.pieceName = "w";
+			} else {
+				this.icon = new ImageIcon("b.png");
+				this.pieceName = "b";
+			}
+			this.label = new JLabel();
+			this.label.setIcon(this.icon);
+		}
+		if (this.pieceName.equals("w") || this.pieceName.equals("b")) {
+			this.icon = new ImageIcon(this.pieceName + ".png");
 
 			this.label.setOpaque(true);
-			label.setIcon(this.icon);
+			this.label.setIcon(this.icon);
 			return;
 		}
-		if (this.color && !pieceName.equals("w") && !pieceName.equals("b")) {
+		if (this.color && !this.pieceName.equals("w") && !this.pieceName.equals("b")) {
+			this.taken = true;
 			if (this.pieceName.equals("Castel")) {
 				this.icon = new ImageIcon("wCastel.png");
 			}
@@ -85,28 +139,31 @@ public class Spot {
 			if (this.pieceName.equals("King")) {
 				this.icon = new ImageIcon("wKing.png");
 			}
-		} else if (!pieceName.equals("w") && !pieceName.equals("b")) {
-			if (this.pieceName.equals("Castel")) {
-				this.icon = new ImageIcon("bCastel.png");
-			}
-			if (this.pieceName.equals("Bawn")) {
-				this.icon = new ImageIcon("bBawn.png");
-			}
-			if (this.pieceName.equals("Knight")) {
-				this.icon = new ImageIcon("bKnight.png");
-			}
-			if (this.pieceName.equals("Bishop")) {
-				this.icon = new ImageIcon("bBishop.png");
-			}
-			if (this.pieceName.equals("Queen")) {
-				this.icon = new ImageIcon("bQueen.png");
-			}
-			if (this.pieceName.equals("King")) {
-				this.icon = new ImageIcon("bKing.png");
+		} else {
+			if (!this.pieceName.equals("w") && !this.pieceName.equals("b")) {
+				this.taken = true;
+				if (this.pieceName.equals("Castel")) {
+					this.icon = new ImageIcon("bCastel.png");
+				}
+				if (this.pieceName.equals("Bawn")) {
+					this.icon = new ImageIcon("bBawn.png");
+				}
+				if (this.pieceName.equals("Knight")) {
+					this.icon = new ImageIcon("bKnight.png");
+				}
+				if (this.pieceName.equals("Bishop")) {
+					this.icon = new ImageIcon("bBishop.png");
+				}
+				if (this.pieceName.equals("Queen")) {
+					this.icon = new ImageIcon("bQueen.png");
+				}
+				if (this.pieceName.equals("King")) {
+					this.icon = new ImageIcon("bKing.png");
+				}
 			}
 		}
 		this.label.setOpaque(true);
-		label.setIcon(this.icon);
+		this.label.setIcon(this.icon);
 
 	}
 
@@ -115,7 +172,33 @@ public class Spot {
 	}
 
 	public void setPiece(Piece p) {
-		this.piece = p;
+		if (p != null) {
+			this.taken = true;
+			this.piece = p;
+		} else {
+			this.taken = false;
+			this.piece = p;
+			setPieceName();
+		}
+
+	}
+
+	private void setPieceName() {
+		// TODO Auto-generated method stub
+		System.out.println();
+		this.taken = false;
+		if (this.pieceName == null) {
+			if (this.squareColor) {
+				this.icon = new ImageIcon("w.png");
+				this.pieceName = "w";
+			} else {
+				this.icon = new ImageIcon("b.png");
+				this.pieceName = "b";
+			}
+			this.label = new JLabel();
+			this.label.setIcon(this.icon);
+		}
+
 	}
 
 	public int getX() {
@@ -132,6 +215,23 @@ public class Spot {
 
 	public void setY(int y) {
 		this.y = y;
+	}
+
+	public static void flush(Spot x) {
+		// TODO Auto-generated method stub
+
+		x.taken = false;
+		x.pieceName = null;
+		if (x.squareColor) {
+			x.icon = new ImageIcon("w.png");
+			x.pieceName = "w";
+		} else {
+			x.icon = new ImageIcon("b.png");
+			x.pieceName = "b";
+		}
+		x.label = new JLabel();
+		x.label.setIcon(x.icon);
+
 	}
 
 }
